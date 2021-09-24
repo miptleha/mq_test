@@ -10,4 +10,4 @@ Run `TestQueue.exe` from console
 
 ## Code
 
-Examine [Program.cs](Program.cs)
+[Program.cs](Program.cs)
