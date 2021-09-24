@@ -7,3 +7,7 @@ Install IBM MQ Client (7), if have another one, recompile project with new mq ma
 Go to `bin/Debug/`  
 Edit `TestQueue.exe.config`  
 Run `TestQueue.exe` from console
+
+## Code
+
+See [Program.cs](source code)
