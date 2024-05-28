@@ -13,7 +13,7 @@ namespace TestQueue
         {
             var channelParams = ConfigurationManager.AppSettings.Get("ChannelInfo").Split(new[] { '/' });
             string manager = ConfigurationManager.AppSettings.Get("QueueManagerName");
-            string queueName = ConfigurationManager.AppSettings.Get("QueueName");
+            string[] queueNames = ConfigurationManager.AppSettings.Get("QueueName").Split(';');
             string channel = channelParams[0];
             string conn = channelParams[2];
             string _userID = null;
@@ -33,18 +33,22 @@ namespace TestQueue
                 Console.WriteLine(string.Format("!!!Error connect to MQ: {0}, reason: {1}", ex.Message, ex.Reason));
                 return;
             }
+            Console.WriteLine();
 
-            try
+            foreach (var queueName in queueNames) 
             {
-                using (var queue = queueManager.AccessQueue(queueName, MQC.MQOO_INPUT_SHARED + MQC.MQOO_FAIL_IF_QUIESCING + MQC.MQOO_INQUIRE))
+                try
                 {
-                    Console.WriteLine("Number of messages: " + queue.CurrentDepth);
+                    using (var queue = queueManager.AccessQueue(queueName, MQC.MQOO_INPUT_SHARED + MQC.MQOO_FAIL_IF_QUIESCING + MQC.MQOO_INQUIRE))
+                    {
+                        Console.WriteLine(queueName + ": " + queue.CurrentDepth);
+                    }
                 }
-            }
-            catch (MQException e)
-            {
-                Console.WriteLine(string.Format("!!!Error get currentDepth from queue {0}, error message: {1}, reason: {2}",
-                    queueName, e.Message, e.Reason));
+                catch (MQException e)
+                {
+                    Console.WriteLine(string.Format("!!!Error get currentDepth from queue {0}, error message: {1}, reason: {2}",
+                        queueName, e.Message, e.Reason));
+                }
             }
 
             queueManager.Disconnect();
